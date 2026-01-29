@@ -4,7 +4,7 @@ Automating Software Engineering Workflows
 
 ## View the Presentation
 
-[View Live Presentation](https://roonhealth.github.io/ai-agents-presentation/)
+[View Live Presentation]([https://roonhealth.github.io/ai-agents-presentation/](https://patrick-roon.github.io/ai-agents-presentation/])
 
 ## About
 
