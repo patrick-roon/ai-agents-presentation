@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Development Agents & Commands</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f7fa;
+            color: #1a1a1a;
+            overflow: hidden;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            background: white;
+            width: 92vw;
+            max-width: 1400px;
+            height: 90vh;
+            max-height: 900px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+            padding: 60px 80px;
+            display: none;
+            flex-direction: column;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .slide.active {
+            display: flex;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        h1 {
+            color: #1a1a1a;
+            font-size: 2.8em;
+            margin-bottom: 0.3em;
+            line-height: 1.2;
+            font-weight: 700;
+        }
+
+        h2 {
+            color: #1a1a1a;
+            font-size: 2em;
+            margin-bottom: 1.2em;
+            font-weight: 700;
+            border: none;
+        }
+
+        h3 {
+            color: #2563eb;
+            font-size: 1.3em;
+            margin: 1em 0 0.7em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+        }
+
+        h3::before {
+            content: "●";
+            color: #2563eb;
+            font-size: 0.8em;
+        }
+
+        p {
+            font-size: 1.1em;
+            line-height: 1.7;
+            margin-bottom: 0.8em;
+            color: #374151;
+        }
+
+        em {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        strong {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        ul, ol {
+            margin-left: 1.5em;
+            margin-bottom: 1em;
+        }
+
+        li {
+            font-size: 1.05em;
+            line-height: 1.7;
+            margin-bottom: 0.6em;
+            color: #374151;
+        }
+
+        /* Phase and workflow styles */
+        .workflow-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2em;
+            margin: 1.5em 0;
+        }
+
+        .phase-box {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5em;
+        }
+
+        .phase-box h3 {
+            color: #2563eb;
+            margin-top: 0;
+            font-size: 1.2em;
+            border-left: 3px solid #2563eb;
+            padding-left: 0.8em;
+        }
+
+        .phase-box h3::before {
+            content: "";
+        }
+
+        .phase-box ul {
+            margin-left: 1.2em;
+            margin-top: 0.8em;
+        }
+
+        .phase-box li {
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin-bottom: 0.5em;
+        }
+
+        .phase-box li::marker {
+            color: #2563eb;
+        }
+
+        pre {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-left: 3px solid #2563eb;
+            padding: 1.5em;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 1em 0;
+            font-size: 0.9em;
+        }
+
+        code {
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            background: #f3f4f6;
+            color: #1f2937;
+            padding: 0.2em 0.5em;
+            border-radius: 4px;
+            font-size: 0.88em;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: #1f2937;
+        }
+
+        blockquote {
+            border-left: 3px solid #2563eb;
+            padding-left: 1.5em;
+            margin: 1.5em 0;
+            color: #4b5563;
+            font-style: italic;
+            font-size: 1.05em;
+            background: #f9fafb;
+            padding: 1em 1em 1em 1.5em;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5em 0;
+            font-size: 0.95em;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #f9fafb;
+            color: #1a1a1a;
+            padding: 1em;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 0.9em 1em;
+            border-bottom: 1px solid #e5e7eb;
+            color: #374151;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 12px;
+            z-index: 1000;
+        }
+
+        .control-btn {
+            background: white;
+            border: 1px solid #e5e7eb;
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s ease;
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+
+        .progress {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+            color: #2563eb;
+            font-size: 1em;
+        }
+
+        .slide-number {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #9ca3af;
+            font-size: 0.85em;
+        }
+
+        /* Branding header */
+        .brand-header {
+            position: absolute;
+            top: 30px;
+            left: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: #374151;
+            padding: 6px;
+        }
+
+        .brand-text {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        /* Title slide specific styles */
+        .slide.title-slide {
+            justify-content: center;
+            text-align: center;
+        }
+
+        .slide.title-slide h1 {
+            font-size: 3.2em;
+            margin-bottom: 0.4em;
+            color: #1a1a1a;
+        }
+
+        .slide.title-slide h2 {
+            color: #2563eb;
+            font-size: 1.8em;
+            font-weight: 500;
+        }
+
+        /* Emoji support */
+        .emoji {
+            font-size: 1.1em;
+        }
+
+        /* Icon bullets */
+        li::marker {
+            color: #2563eb;
+        }
+
+        /* Highlight boxes */
+        .highlight-box {
+            background: #eff6ff;
+            border-left: 3px solid #2563eb;
+            padding: 1em 1.5em;
+            margin: 1em 0;
+            border-radius: 6px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 40px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.6em;
+            }
+
+            p, li {
+                font-size: 1em;
+            }
+
+            .workflow-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Custom scrollbar */
+        .slide::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .slide::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .slide::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+
+        .slide::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="slide active title-slide">
+            <div class="brand-header">
+                <img src="AppIconDev.png" alt="Roon Logo" class="brand-logo">
+                <span class="brand-text">Roon for Devs</span>
+            </div>
+            <h1>AI Development Agents & Commands</h1>
+            <h2 style="border: none;">Automating Software Engineering Workflows</h2>
+            <p style="margin-top: 2em; font-size: 1.3em;"><em>Presented by: Patrick Porché</em></p>
+        </div>
+
+        <div class="slide">
+            <h2>Overview</h2>
+            <h3>What We'll Cover</h3>
+            <ol>
+                <li><strong>Code Review Automation</strong>
+                    <ul>
+                        <li>PR Stacker</li>
+                        <li>PR Comment Reviewer</li>
+                    </ul>
+                </li>
+                <li><strong>Sprint & Ticket Preparation</strong>
+                    <ul>
+                        <li>Analyze Queue</li>
+                        <li>Ticket Scoper</li>
+                    </ul>
+                </li>
+                <li><strong>Git Workflow Helpers</strong>
+                    <ul>
+                        <li>Commit Message Writer</li>
+                        <li>Doctor Mobile Release Notes</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="slide">
+            <h2>The Problem</h2>
+            <h3>Engineering Bottlenecks We Face</h3>
+            <ul>
+                <li>❌ Large PRs that are difficult to review (>700 lines, >15 files)</li>
+                <li>❌ Manual PR comment triage from multiple sources</li>
+                <li>❌ Sprint tickets with incomplete or missing context</li>
+                <li>❌ Inconsistent commit messages and release notes</li>
+                <li>❌ Ticket scoping requires extensive back-and-forth</li>
+            </ul>
+            <p style="margin-top: 1.5em;"><strong>Result:</strong> Slower velocity, context switching, review fatigue</p>
+        </div>
+
+        <div class="slide">
+            <h2>The Solution</h2>
+            <h3>Intelligent AI Agents</h3>
+            <p>Six specialized agents that automate repetitive engineering tasks:</p>
+            <ol>
+                <li><strong>pr-stacker</strong> - Split large PRs into reviewable stacks</li>
+                <li><strong>pr-comment-reviewer</strong> - Systematically triage PR comments</li>
+                <li><strong>analyze-queue</strong> - Identify and fill in incomplete sprint tickets</li>
+                <li><strong>ticket-scoper</strong> - Collaborative ticket breakdown</li>
+                <li><strong>commit-message-writer</strong> - Generate conventional commits</li>
+                <li><strong>doctor-mobile-release-notes</strong> - Automated release documentation</li>
+            </ol>
+        </div>
+
+        <div class="slide">
+            <h2>PR Stacker - Overview</h2>
+            <h3>Problem:</h3>
+            <p>Large branches exceed review thresholds (>700 lines added, >15 files changed)</p>
+            <h3>Solution:</h3>
+            <p>Intelligent PR stack creation that maintains:</p>
+            <ul>
+                <li>✅ Logical coherence (components + styles + types together)</li>
+                <li>✅ Git history preservation</li>
+                <li>✅ Buildable incremental changes</li>
+                <li>✅ Clear dependencies between PRs</li>
+            </ul>
+            <p style="margin-top: 1.5em;"><strong>Command:</strong> <code>/stack-pr</code> or use pr-stacker agent</p>
+        </div>
+
+        <div class="slide">
+            <h2>PR Stacker - Workflow</h2>
+            <h3>Phase 1: Analysis</h3>
+            <ul>
+                <li>Calculate accurate metrics (excluding generated/test files)</li>
+                <li>Identify merge commits and scope correctly</li>
+                <li>Analyze commit history for natural groupings</li>
+            </ul>
+            <h3>Phase 2: Strategy Design</h3>
+            <ul>
+                <li>Group files by functional relationships</li>
+                <li>Order changes to create buildable stack</li>
+                <li>Ensure each PR ≤700 lines, ≤15 files</li>
+            </ul>
+            <h3>Phase 3: Plan Presentation</h3>
+            <ul>
+                <li>Show proposed split with metrics</li>
+                <li>Get user approval before making changes</li>
+            </ul>
+            <h3>Phase 4: Execution</h3>
+            <ul>
+                <li>Create branches with preserved git history</li>
+                <li>Optionally push and create draft PRs via <code>gh</code> CLI</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>PR Stacker - Example Output</h2>
+            <div style="background: #1e293b; color: #e2e8f0; border-radius: 8px; padding: 1.5em; margin-top: 1em; font-family: 'Monaco', 'Menlo', 'Courier New', monospace; font-size: 0.9em; line-height: 1.6;">
+                <div style="margin-bottom: 1.5em;">
+                    <div style="color: #94a3b8; margin-bottom: 0.8em;">📊 <span style="color: #e2e8f0; font-weight: 600;">Current Branch Analysis</span></div>
+                    <div style="padding-left: 1.5em; color: #cbd5e1;">
+                        <div><span style="color: #60a5fa;">Branch:</span> feature/payment-integration</div>
+                        <div><span style="color: #60a5fa;">Base:</span> main</div>
+                        <div><span style="color: #60a5fa;">Total:</span> <span style="color: #10b981;">+1,450 lines</span>, 23 files changed</div>
+                        <div><span style="color: #60a5fa;">Status:</span> <span style="color: #ef4444;">Exceeds limits ❌</span></div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1.5em;">
+                    <div style="color: #94a3b8; margin-bottom: 0.8em;">📋 <span style="color: #e2e8f0; font-weight: 600;">Proposed Split Plan</span></div>
+                </div>
+
+                <div style="margin-bottom: 1.5em;">
+                    <div style="color: #60a5fa; font-weight: 600; margin-bottom: 0.5em;">PR 1: feature/payment-integration-stack-1-types-and-models</div>
+                    <div style="padding-left: 1.5em; color: #cbd5e1;">
+                        <div>→ <span style="color: #8b5cf6;">Builds on:</span> main</div>
+                        <div>→ <span style="color: #f59e0b;">Changes:</span> <span style="color: #10b981;">+320 lines</span>, 6 files</div>
+                        <div>→ <span style="color: #ec4899;">Description:</span> Core payment types, interfaces, and data models</div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1.5em;">
+                    <div style="color: #60a5fa; font-weight: 600; margin-bottom: 0.5em;">PR 2: feature/payment-integration-stack-2-api-integration</div>
+                    <div style="padding-left: 1.5em; color: #cbd5e1;">
+                        <div>→ <span style="color: #8b5cf6;">Builds on:</span> PR 1</div>
+                        <div>→ <span style="color: #f59e0b;">Changes:</span> <span style="color: #10b981;">+580 lines</span>, 9 files</div>
+                        <div>→ <span style="color: #ec4899;">Description:</span> Payment API client, endpoints, error handling</div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1.5em;">
+                    <div style="color: #60a5fa; font-weight: 600; margin-bottom: 0.5em;">PR 3: feature/payment-integration-stack-3-ui-components</div>
+                    <div style="padding-left: 1.5em; color: #cbd5e1;">
+                        <div>→ <span style="color: #8b5cf6;">Builds on:</span> PR 2</div>
+                        <div>→ <span style="color: #f59e0b;">Changes:</span> <span style="color: #10b981;">+550 lines</span>, 8 files</div>
+                        <div>→ <span style="color: #ec4899;">Description:</span> Payment form UI, validation, user flows</div>
+                    </div>
+                </div>
+
+                <div style="color: #10b981;">✅ All PRs meet thresholds (≤700 lines, ≤15 files)</div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>PR Comment Reviewer - Overview</h2>
+            <h3>Problem:</h3>
+            <p>PRs receive comments from multiple sources (teammates, Copilot, bots)<br>
+            Manual triage is time-consuming and inconsistent</p>
+            <h3>Solution:</h3>
+            <p>Objective, context-aware analysis of PR comments with actionable recommendations</p>
+            <h3>Key Features:</h3>
+            <ul>
+                <li>Fetches unresolved comments from any source (teammates, Copilot, bots)</li>
+                <li>Presents numbered list with action menu for each comment</li>
+                <li>Actions: analyze | address | resolve | resolve-with-comment | skip</li>
+                <li>Analyzes comments in code context (validity, likelihood, impact, effort)</li>
+                <li>Provides objective recommendations</li>
+                <li>Batch commits multiple fixes</li>
+            </ul>
+            <p style="margin-top: 1em;"><strong>Command:</strong> <code>/review-pr-comments</code> or use pr-comment-reviewer agent</p>
+        </div>
+
+        <div class="slide">
+            <h2>PR Comment Reviewer - Analysis Framework</h2>
+            <h3>Evaluation Criteria:</h3>
+            <ol>
+                <li><strong>Validity</strong> - Is the concern technically correct?</li>
+                <li><strong>Likelihood</strong> - How likely is this scenario to occur?</li>
+                <li><strong>Impact</strong> - What's the consequence if ignored?</li>
+                <li><strong>Effort</strong> - How much work to address?</li>
+                <li><strong>Applicability</strong> - Does it fit the platform (React Native vs web)?</li>
+                <li><strong>Feasibility</strong> - Can this be addressed in current scope?</li>
+            </ol>
+            <h3>Output Format:</h3>
+            <div style="background: #1e293b; color: #e2e8f0; border-radius: 8px; padding: 1.5em; margin-top: 1em; font-family: 'Monaco', 'Menlo', 'Courier New', monospace; font-size: 0.9em; line-height: 1.6;">
+                <div style="color: #e2e8f0; font-weight: 600; margin-bottom: 1.2em;">Analysis: Comment 3 - Null pointer handling</div>
+
+                <div style="margin-bottom: 0.8em;">
+                    <span style="color: #60a5fa; font-weight: 600;">Context:</span> <span style="color: #cbd5e1;">Function processes user input from form</span>
+                </div>
+
+                <div style="margin-bottom: 0.8em;">
+                    <span style="color: #60a5fa; font-weight: 600;">Current behavior:</span> <span style="color: #cbd5e1;">Assumes field is always populated</span>
+                </div>
+
+                <div style="margin-bottom: 1.2em;">
+                    <span style="color: #60a5fa; font-weight: 600;">Comment's concern:</span> <span style="color: #cbd5e1;">Field could be null in edge cases</span>
+                </div>
+
+                <div style="margin-bottom: 1.2em;">
+                    <span style="color: #f59e0b; font-weight: 600;">Likelihood:</span> <span style="color: #cbd5e1;">Medium</span> |
+                    <span style="color: #ef4444; font-weight: 600;">Impact:</span> <span style="color: #cbd5e1;">High</span> |
+                    <span style="color: #10b981; font-weight: 600;">Effort:</span> <span style="color: #cbd5e1;">Trivial</span>
+                </div>
+
+                <div style="margin-bottom: 0.8em;">
+                    <span style="color: #8b5cf6; font-weight: 600;">Recommendation:</span> <span style="color: #60a5fa; font-weight: 600;">ADDRESS</span>
+                </div>
+
+                <div style="color: #94a3b8; font-style: italic;">Adding a null check prevents potential crash with minimal effort.</div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>PR Comment Reviewer - Workflow</h2>
+            <h3>Interactive Triage Process:</h3>
+            <ol>
+                <li><strong>Fetch</strong> - Get all unresolved PR comments</li>
+                <li><strong>Present</strong> - Show numbered list with action menu</li>
+                <li><strong>Analyze</strong> - Evaluate comment when requested</li>
+                <li><strong>Execute</strong> - Apply fixes or resolve with explanation</li>
+                <li><strong>Commit</strong> - Batch multiple fixes into single commit</li>
+            </ol>
+            <h3>GitHub Integration:</h3>
+            <ul>
+                <li>Uses <code>gh</code> CLI for PR operations</li>
+                <li>GraphQL API for thread resolution</li>
+                <li>Replies to comment threads with reasoning</li>
+                <li>Tracks progress: "Comment 3 of 7"</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Analyze Queue - Overview</h2>
+            <h3>Problem:</h3>
+            <p>Sprint tickets often have incomplete or template content<br>
+            Engineers spend time manually identifying and filling in missing context</p>
+            <h3>Solution:</h3>
+            <p>AI-powered ticket preparation that identifies incomplete tickets and helps add necessary context</p>
+            <h3>Capabilities:</h3>
+            <ul>
+                <li>Identifies tickets with empty or minimal descriptions</li>
+                <li>Detects default template content that needs filling</li>
+                <li>Helps add descriptions, requirements, and resources</li>
+                <li>Analyzes codebase for relevant context</li>
+                <li>Updates tickets directly in Linear</li>
+            </ul>
+            <p style="margin-top: 1em;"><strong>Command:</strong> <code>/analyze-queue</code></p>
+        </div>
+
+        <div class="slide">
+            <h2>Analyze Queue - Use Cases</h2>
+            <h3>When to Use:</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2em; margin-top: 1em;">
+                <div>
+                    <h4 style="color: #2563eb; margin-bottom: 0.5em;">✅ Sprint Start</h4>
+                    <ul style="font-size: 0.95em;">
+                        <li>Prepare tickets for development</li>
+                        <li>Fill in template content</li>
+                        <li>Ensure tickets are actionable</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #2563eb; margin-bottom: 0.5em;">✅ Before Standup</h4>
+                    <ul style="font-size: 0.95em;">
+                        <li>Review incomplete tickets</li>
+                        <li>Add missing context</li>
+                        <li>Prepare for daily sync</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #2563eb; margin-bottom: 0.5em;">✅ PM Handoff</h4>
+                    <ul style="font-size: 0.95em;">
+                        <li>Add technical details</li>
+                        <li>Define acceptance criteria</li>
+                        <li>Link related resources</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Ticket Scoper - Overview</h2>
+            <h3>Problem:</h3>
+            <p>Large tickets need breakdown into subtasks<br>
+            Estimations require context from code, designs, and related tickets</p>
+            <h3>Solution:</h3>
+            <p>Collaborative ticket breakdown with full context loading</p>
+            <h3>Workflow:</h3>
+            <ol>
+                <li><strong>Load Context</strong>
+                    <ul>
+                        <li>Fetch Linear ticket details</li>
+                        <li>Pull related project information</li>
+                        <li>Load Figma designs if referenced</li>
+                        <li>Read relevant codebase files</li>
+                    </ul>
+                </li>
+                <li><strong>Propose Breakdown</strong>
+                    <ul>
+                        <li>Create logical subtask grouping</li>
+                        <li>Provide effort estimates</li>
+                        <li>Identify dependencies</li>
+                    </ul>
+                </li>
+                <li><strong>Create Subtasks</strong>
+                    <ul>
+                        <li>Generate detailed ticket descriptions</li>
+                        <li>Link to parent ticket</li>
+                        <li>Set appropriate priorities</li>
+                    </ul>
+                </li>
+            </ol>
+            <p style="margin-top: 1em;"><strong>Command:</strong> <code>/scope-ticket</code> (plus ticket ID)</p>
+        </div>
+
+        <div class="slide">
+            <h2>Ticket Scoper - Example</h2>
+            <p><strong>Input:</strong> Large ticket "ENG-7500: Implement video playback feature"</p>
+            <h3>Output:</h3>
+            <div style="background: #1e293b; color: #e2e8f0; border-radius: 8px; padding: 1.5em; margin-top: 1em; font-family: 'Monaco', 'Menlo', 'Courier New', monospace; font-size: 0.9em; line-height: 1.6;">
+                <div style="margin-bottom: 1.5em; color: #94a3b8;">🎯 <span style="color: #e2e8f0; font-weight: 600;">Proposed Breakdown (4 subtasks):</span></div>
+
+                <div style="margin-bottom: 1.5em;">
+                    <div style="color: #60a5fa; font-weight: 600; margin-bottom: 0.5em;">1. ENG-7501: Video player component architecture</div>
+                    <div style="padding-left: 1.5em; color: #cbd5e1;">
+                        <div><span style="color: #f59e0b;">Estimate:</span> 3 days</div>
+                        <div><span style="color: #10b981;">Dependencies:</span> None</div>
+                        <div><span style="color: #8b5cf6;">Description:</span> Design and implement base VideoPlayer component with controls, state management</div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1.5em;">
+                    <div style="color: #60a5fa; font-weight: 600; margin-bottom: 0.5em;">2. ENG-7502: YouTube/Vimeo API integration</div>
+                    <div style="padding-left: 1.5em; color: #cbd5e1;">
+                        <div><span style="color: #f59e0b;">Estimate:</span> 2 days</div>
+                        <div><span style="color: #10b981;">Dependencies:</span> <span style="color: #ec4899;">ENG-7501</span></div>
+                        <div><span style="color: #8b5cf6;">Description:</span> Integrate video platform APIs, handle authentication, implement error handling</div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1.5em;">
+                    <div style="color: #60a5fa; font-weight: 600; margin-bottom: 0.5em;">3. ENG-7503: Link preview video detection</div>
+                    <div style="padding-left: 1.5em; color: #cbd5e1;">
+                        <div><span style="color: #f59e0b;">Estimate:</span> 2 days</div>
+                        <div><span style="color: #10b981;">Dependencies:</span> <span style="color: #ec4899;">ENG-7502</span></div>
+                        <div><span style="color: #8b5cf6;">Description:</span> Update link preview logic to detect and prioritize video URLs</div>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="color: #60a5fa; font-weight: 600; margin-bottom: 0.5em;">4. ENG-7504: Video playback testing & optimization</div>
+                    <div style="padding-left: 1.5em; color: #cbd5e1;">
+                        <div><span style="color: #f59e0b;">Estimate:</span> 1 day</div>
+                        <div><span style="color: #10b981;">Dependencies:</span> <span style="color: #ec4899;">ENG-7501, ENG-7502, ENG-7503</span></div>
+                        <div><span style="color: #8b5cf6;">Description:</span> E2E tests, performance optimization, memory management</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Commit Message Writer - Overview</h2>
+            <h3>Problem:</h3>
+            <p>Inconsistent commit messages make changelogs unclear<br>
+            Manual message writing is repetitive</p>
+            <h3>Solution:</h3>
+            <p>Automated conventional commit message generation</p>
+            <h3>How It Works:</h3>
+            <ol>
+                <li>Analyzes git diff (staged or unstaged)</li>
+                <li>Determines appropriate action prefix</li>
+                <li>Identifies scope and impact</li>
+                <li>Generates concise, actionable message</li>
+                <li>Follows imperative mood and team conventions</li>
+            </ol>
+            <h3>Action Prefixes:</h3>
+            <ul style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5em;">
+                <li><code>add</code> - New features or functionality</li>
+                <li><code>fix</code> - Bug fixes and corrections</li>
+                <li><code>update</code> - Modifications to existing features</li>
+                <li><code>refactor</code> - Code restructuring</li>
+                <li><code>docs</code> - Documentation changes</li>
+                <li><code>test</code> - Test additions</li>
+                <li><code>chore</code> - Maintenance tasks</li>
+            </ul>
+            <p style="margin-top: 1em;"><strong>Command:</strong> <code>/commit</code></p>
+        </div>
+
+        <div class="slide">
+            <h2>Commit Message Writer - Examples</h2>
+
+            <h3>Example 1: New Feature</h3>
+            <div style="background: #1e293b; color: #e2e8f0; border-radius: 8px; padding: 1.2em; margin: 1em 0; font-family: 'Monaco', 'Menlo', 'Courier New', monospace; font-size: 0.9em; line-height: 1.6;">
+                <div style="color: #94a3b8; margin-bottom: 0.5em;">Diff: Added authentication middleware + login route</div>
+                <div><span style="color: #f59e0b;">Message:</span> <span style="color: #10b981;">add:</span> <span style="color: #cbd5e1;">user authentication with JWT tokens</span></div>
+            </div>
+
+            <h3>Example 2: Bug Fix</h3>
+            <div style="background: #1e293b; color: #e2e8f0; border-radius: 8px; padding: 1.2em; margin: 1em 0; font-family: 'Monaco', 'Menlo', 'Courier New', monospace; font-size: 0.9em; line-height: 1.6;">
+                <div style="color: #94a3b8; margin-bottom: 0.5em;">Diff: Fixed null pointer in payment processing</div>
+                <div><span style="color: #f59e0b;">Message:</span> <span style="color: #ef4444;">fix:</span> <span style="color: #cbd5e1;">null pointer exception in payment validation</span></div>
+            </div>
+
+            <h3>Example 3: Refactor</h3>
+            <div style="background: #1e293b; color: #e2e8f0; border-radius: 8px; padding: 1.2em; margin: 1em 0; font-family: 'Monaco', 'Menlo', 'Courier New', monospace; font-size: 0.9em; line-height: 1.6;">
+                <div style="color: #94a3b8; margin-bottom: 0.5em;">Diff: Restructured API client classes</div>
+                <div><span style="color: #f59e0b;">Message:</span> <span style="color: #8b5cf6;">refactor:</span> <span style="color: #cbd5e1;">API client to use dependency injection</span></div>
+            </div>
+
+            <h3>Example 4: Multiple Concerns</h3>
+            <div style="background: #1e293b; color: #e2e8f0; border-radius: 8px; padding: 1.2em; margin: 1em 0; font-family: 'Monaco', 'Menlo', 'Courier New', monospace; font-size: 0.9em; line-height: 1.6;">
+                <div style="color: #f59e0b; margin-bottom: 0.5em;">Recommendation: Split into 2 commits</div>
+                <div style="margin-bottom: 0.3em;"><span style="color: #60a5fa;">Commit 1:</span> <span style="color: #10b981;">add:</span> <span style="color: #cbd5e1;">video playback component</span></div>
+                <div><span style="color: #60a5fa;">Commit 2:</span> <span style="color: #ef4444;">fix:</span> <span style="color: #cbd5e1;">video thumbnail loading issue</span></div>
+            </div>
+
+            <h3>Quality Checks:</h3>
+            <ul>
+                <li>Action verb is accurate</li>
+                <li>Message is concise but complete</li>
+                <li>Uses imperative mood</li>
+                <li>Will make sense in changelog</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Doctor Mobile Release Notes - Overview</h2>
+            <h3>Problem:</h3>
+            <p>Creating release notes from commits is manual and time-consuming<br>
+            Technical jargon doesn't translate well for stakeholders</p>
+            <h3>Solution:</h3>
+            <p>Transform git commits into stakeholder-friendly release documentation</p>
+            <h3>Features:</h3>
+            <ul>
+                <li>Analyzes commits affecting <code>apps/doctor-mobile/</code></li>
+                <li>Filters out version bumps, merges, and noise</li>
+                <li>Categorizes changes by type</li>
+                <li>Translates technical details to user benefits</li>
+                <li>Uses Slack markdown for easy sharing</li>
+                <li>Updates <code>RELEASE_NOTES.md</code> automatically</li>
+            </ul>
+            <p style="margin-top: 1em;"><strong>Command:</strong> <code>/doctor-mobile-release</code></p>
+        </div>
+
+        <div class="slide">
+            <h2>Doctor Mobile Release Notes - Workflow</h2>
+            <h3>Phase 1: Commit Analysis</h3>
+            <ul>
+                <li>Identify commits since last release</li>
+                <li>Filter to Doctor Mobile directory only</li>
+                <li>Exclude version bumps, merges, and duplicates</li>
+                <li>Handle new release branch scenario</li>
+            </ul>
+            <h3>Phase 2: Categorization</h3>
+            <pre><code>✨ New Features      - feat:, add: commits
+🔧 Bug Fixes        - fix: commits
+🎨 UI/UX Improvements - improve:, style: commits
+🔒 Security         - Security-related changes
+📱 Platform Updates  - iOS/Android specific changes
+🛠️ Technical Improvements - refactor:, performance
+📚 Documentation    - User-facing docs</code></pre>
+            <h3>Phase 3: Generation</h3>
+            <ul>
+                <li>Transform technical commits to user-friendly language</li>
+                <li>Group related changes under descriptive headers</li>
+                <li>Include PR numbers for reference</li>
+                <li>Present draft for approval</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Doctor Mobile Release Notes - Example</h2>
+            <h3>Generated Release Notes:</h3>
+            <div class="phase-box" style="margin-top: 1em;">
+                <h4 style="color: #1a1a1a; font-size: 1.3em; margin-bottom: 1em; border: none;">Doctor Mobile v2.0.0 Release Notes</h4>
+
+                <h5 style="color: #2563eb; font-size: 1.1em; margin: 1.2em 0 0.8em; font-weight: 600;">✨ New Features</h5>
+
+                <p style="font-weight: 600; margin-bottom: 0.5em;">Video Playback Support</p>
+                <p style="margin-bottom: 1em;"><em>YouTube and Vimeo Integration</em>: Posts containing YouTube or Vimeo links now display inline video players, allowing you to watch content directly within the app. The system intelligently prioritizes video URLs in link previews for the best viewing experience (#4951, #4953, #4954)</p>
+
+                <p style="font-weight: 600; margin-bottom: 0.5em;">In-App Web Browser</p>
+                <p style="margin-bottom: 1em;"><em>WebView Support</em>: External links now open in a built-in browser within the app, eliminating the need to switch to external browsers and providing a seamless browsing experience (#4917)</p>
+
+                <h5 style="color: #2563eb; font-size: 1.1em; margin: 1.2em 0 0.8em; font-weight: 600;">🔧 Bug Fixes</h5>
+
+                <p style="font-weight: 600; margin-bottom: 0.5em;">Navigation & UI Fixes</p>
+                <p style="margin-bottom: 0;"><em>Profile Back Button</em>: Fixed an issue where tapping the Back button on a profile opened from a reply would show the wrong screen. Navigation now correctly returns you to the previous context (#4964)</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Technical Architecture</h2>
+            <h3>Built on Claude Code Framework</h3>
+            <h4>Agent Architecture:</h4>
+            <ul>
+                <li>Each agent is a specialized <code>.md</code> file in <code>.claude/agents/</code></li>
+                <li>Agents have specific models (Sonnet), colors, and descriptions</li>
+                <li>Commands in <code>.claude/commands/</code> invoke agents via Task tool</li>
+            </ul>
+            <h4>Integration Points:</h4>
+            <ul>
+                <li><strong>GitHub:</strong> <code>gh</code> CLI for PRs, comments, and operations</li>
+                <li><strong>Linear:</strong> MCP server for ticket management</li>
+                <li><strong>Figma:</strong> MCP server for design integration</li>
+                <li><strong>Git:</strong> Direct git commands for history analysis</li>
+            </ul>
+            <h4>Key Tools Used:</h4>
+            <ul>
+                <li>Bash (git, gh CLI)</li>
+                <li>Read/Edit/Write (file operations)</li>
+                <li>Grep/Glob (code search)</li>
+                <li>Task (agent orchestration)</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Best Practices</h2>
+            <h3>When to Use Each Agent:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Agent</th>
+                        <th>Use When</th>
+                        <th>Don't Use When</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>PR Stacker</td>
+                        <td>Branch >700 lines or >15 files</td>
+                        <td>Branch already reviewable</td>
+                    </tr>
+                    <tr>
+                        <td>PR Comment Reviewer</td>
+                        <td>Multiple unresolved comments</td>
+                        <td>No comments to review</td>
+                    </tr>
+                    <tr>
+                        <td>Analyze Queue</td>
+                        <td>Sprint start, incomplete tickets</td>
+                        <td>Tickets already well-documented</td>
+                    </tr>
+                    <tr>
+                        <td>Ticket Scoper</td>
+                        <td>Large/complex ticket needs breakdown</td>
+                        <td>Ticket already well-scoped</td>
+                    </tr>
+                    <tr>
+                        <td>Commit Message Writer</td>
+                        <td>Any commit</td>
+                        <td>Trivial single-line changes</td>
+                    </tr>
+                    <tr>
+                        <td>Release Notes</td>
+                        <td>Preparing release deployment</td>
+                        <td>Mid-development commits</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3 style="margin-top: 1.5em;">Pro Tips:</h3>
+            <ul>
+                <li>Run PR Stacker proactively before creating large PRs</li>
+                <li>Use PR Comment Reviewer on Copilot while your PR is in draft - thoroughly review and resolve bot comments before putting up for review</li>
+                <li>For Analyze Queue: create all your tickets with titles (empty) from sprint themes before running</li>
+                <li>Scope tickets early to improve estimation accuracy</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Getting Started</h2>
+            <h3>How to Use These Agents:</h3>
+            <h4>1. Commands:</h4>
+            <ul>
+                <li><code>/commit</code> - Generate commit message</li>
+                <li><code>/doctor-mobile-release</code> - Create release notes</li>
+                <li><em>(Future: /stack-pr, /review-pr-comments, /analyze-queue, /scope-ticket)</em></li>
+            </ul>
+            <h4>2. Direct Agent Invocation:</h4>
+            <p style="margin: 1em 0;">You can directly invoke agents with <code>@</code> mention:</p>
+            <ul>
+                <li><code>@pr-stacker</code></li>
+                <li><code>@pr-comment-reviewer</code></li>
+                <li><code>@analyze-queue</code></li>
+                <li><code>@ticket-scoper</code></li>
+            </ul>
+            <h4>3. Agent Files Location:</h4>
+            <ul>
+                <li><code>.claude/agents/</code> - Agent definitions</li>
+                <li><code>.claude/commands/</code> - Command definitions</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Key Takeaways</h2>
+            <h3>What We Learned:</h3>
+            <ol>
+                <li><strong>Specialization Works</strong> - Each agent has a clear, focused purpose</li>
+                <li><strong>Context is King</strong> - Agents that read code/designs/tickets make better decisions</li>
+                <li><strong>Human in the Loop</strong> - Agents present plans, humans approve</li>
+                <li><strong>Integration Matters</strong> - GitHub, Linear, and Figma integration is crucial</li>
+                <li><strong>Incremental Adoption</strong> - Start with simple agents, expand based on value</li>
+            </ol>
+            <h3 style="margin-top: 1.5em;">Success Factors:</h3>
+            <ul>
+                <li>Clear agent descriptions with examples</li>
+                <li>Consistent command interface</li>
+                <li>Prompt to get what you want from the bot - ask for updates to the agent for incremental improvements</li>
+            </ul>
+        </div>
+
+        <div class="slide title-slide">
+            <h1>Thank You!</h1>
+            <p style="font-size: 1.5em; margin-top: 1em;">Let's continue innovating and automating our workflows</p>
+            <h3 style="margin-top: 2em; color: #2563eb;">Next Steps:</h3>
+            <ol style="text-align: left; display: inline-block; margin-top: 1em;">
+                <li>Try out the agents in your daily workflow</li>
+                <li>Provide feedback on agent behavior</li>
+                <li>Suggest new automation opportunities</li>
+                <li>Contribute agent improvements</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn" id="prevBtn" title="Previous slide (←)">←</button>
+        <button class="control-btn" id="nextBtn" title="Next slide (→)">→</button>
+    </div>
+
+    <div class="progress" id="progress">1 / 26</div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const progress = document.getElementById('progress');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            progress.textContent = `${currentSlide + 1} / ${totalSlides}`;
+
+            // Scroll to top of slide
+            slides[currentSlide].scrollTop = 0;
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        // Event listeners
+        prevBtn.addEventListener('click', prevSlide);
+        nextBtn.addEventListener('click', nextSlide);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                showSlide(0);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                showSlide(totalSlides - 1);
+            }
+        });
+
+        // Touch support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                nextSlide();
+            }
+            if (touchEndX > touchStartX + 50) {
+                prevSlide();
+            }
+        }
+
+        // Initialize
+        progress.textContent = `${currentSlide + 1} / ${totalSlides}`;
+    </script>
+</body>
+</html>
